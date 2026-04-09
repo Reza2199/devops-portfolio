@@ -9,19 +9,19 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing HTML existence...'
-                sh 'test -f index.html'
+                bat 'if not exist index.html exit 1'
             }
         }
         stage('Docker Build & Push') {
             steps {
-                sh 'docker build -t themartiantourist/portfolio-cv:latest .'
-                sh 'docker push themartiantourist/portfolio-cv:latest'
+                bat 'docker build -t themartiantourist/portfolio-cv:latest .'
+                bat 'docker push themartiantourist/portfolio-cv:latest'
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
+                bat 'kubectl apply -f deployment.yaml'
+                bat 'kubectl apply -f service.yaml'
             }
         }
     }
