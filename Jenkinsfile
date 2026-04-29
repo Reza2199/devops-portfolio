@@ -1,9 +1,9 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Code Pull') {
             steps {
-                echo 'Building Application... (Files are ready)'
+                checkout scm
             }
         }
         stage('Test') {
@@ -12,13 +12,17 @@ pipeline {
                 bat 'if not exist index.html exit 1'
             }
         }
-        stage('Docker Build & Push') {
+        stage('Image Build') {
             steps {
                 bat 'docker build -t themartiantourist/portfolio-cv:latest .'
+            }
+        }
+        stage('Push Image') {
+            steps {
                 bat 'docker push themartiantourist/portfolio-cv:latest'
             }
         }
-        stage('Deploy to Kubernetes') {
+        stage('Deploy') {
             steps {
                 bat 'kubectl apply -f deployment.yaml'
                 bat 'kubectl apply -f service.yaml'
